@@ -2272,7 +2272,12 @@ static void drain_stock(struct memcg_stock_pcp *stock)
 
 		res_counter_uncharge(&old->res, bytes);
 		if (do_swap_account)
+<<<<<<< HEAD
 			res_counter_uncharge(&old->memsw, bytes);
+=======
+			page_counter_uncharge(&old->memsw, stock->nr_pages);
+		css_put_many(&old->css, stock->nr_pages);
+>>>>>>> 1d99cc4d49f5... mm: memcontrol: take a css reference for each charged page
 		stock->nr_pages = 0;
 	}
 	stock->cached = NULL;
@@ -2533,6 +2538,7 @@ bypass:
 	return -EINTR;
 
 done_restock:
+	css_get_many(&memcg->css, batch);
 	if (batch > nr_pages)
 		refill_stock(memcg, batch - nr_pages);
 done:
@@ -2548,6 +2554,7 @@ static void cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
 
 	res_counter_uncharge(&memcg->res, bytes);
 	if (do_swap_account)
+<<<<<<< HEAD
 		res_counter_uncharge(&memcg->memsw, bytes);
 }
 
@@ -2567,6 +2574,11 @@ static void __mem_cgroup_cancel_local_charge(struct mem_cgroup *memcg,
 	if (do_swap_account)
 		res_counter_uncharge_until(&memcg->memsw,
 						memcg->memsw.parent, bytes);
+=======
+		page_counter_uncharge(&memcg->memsw, nr_pages);
+
+	css_put_many(&memcg->css, nr_pages);
+>>>>>>> 1d99cc4d49f5... mm: memcontrol: take a css reference for each charged page
 }
 
 /*
@@ -2762,8 +2774,13 @@ static int memcg_charge_kmem(struct mem_cgroup *memcg, gfp_t gfp, u64 size)
 		 */
 		res_counter_charge_nofail(&memcg->res, size, &fail_res);
 		if (do_swap_account)
+<<<<<<< HEAD
 			res_counter_charge_nofail(&memcg->memsw, size,
 						  &fail_res);
+=======
+			page_counter_charge(&memcg->memsw, nr_pages);
+		css_get_many(&memcg->css, nr_pages);
+>>>>>>> 1d99cc4d49f5... mm: memcontrol: take a css reference for each charged page
 		ret = 0;
 	} else if (ret)
 		res_counter_uncharge(&memcg->kmem, size);
@@ -2778,8 +2795,14 @@ static void memcg_uncharge_kmem(struct mem_cgroup *memcg, u64 size)
 		res_counter_uncharge(&memcg->memsw, size);
 
 	/* Not down to 0 */
+<<<<<<< HEAD
 	if (res_counter_uncharge(&memcg->kmem, size))
+=======
+	if (page_counter_uncharge(&memcg->kmem, nr_pages)) {
+		css_put_many(&memcg->css, nr_pages);
+>>>>>>> 1d99cc4d49f5... mm: memcontrol: take a css reference for each charged page
 		return;
+	}
 
 	/*
 	 * Releases a reference taken in kmem_cgroup_css_offline in case
@@ -2791,6 +2814,8 @@ static void memcg_uncharge_kmem(struct mem_cgroup *memcg, u64 size)
 	 */
 	if (memcg_kmem_test_and_clear_dead(memcg))
 		css_put(&memcg->css);
+
+	css_put_many(&memcg->css, nr_pages);
 }
 
 /*
@@ -3415,8 +3440,20 @@ static int mem_cgroup_move_parent(struct page *page,
 
 	ret = mem_cgroup_move_account(page, nr_pages,
 				pc, child, parent);
+<<<<<<< HEAD
 	if (!ret)
 		__mem_cgroup_cancel_local_charge(child, nr_pages);
+=======
+	if (!ret) {
+		if (!mem_cgroup_is_root(parent))
+			css_get_many(&parent->css, nr_pages);
+		/* Take charge off the local counters */
+		page_counter_cancel(&child->memory, nr_pages);
+		if (do_swap_account)
+			page_counter_cancel(&child->memsw, nr_pages);
+		css_put_many(&child->css, nr_pages);
+	}
+>>>>>>> 1d99cc4d49f5... mm: memcontrol: take a css reference for each charged page
 
 	if (nr_pages > 1)
 		compound_unlock_irqrestore(page, flags);
@@ -5808,7 +5845,6 @@ static void __mem_cgroup_clear_mc(void)
 {
 	struct mem_cgroup *from = mc.from;
 	struct mem_cgroup *to = mc.to;
-	int i;
 
 	/* we must uncharge all the leftover precharges from mc.to */
 	if (mc.precharge) {
@@ -5830,8 +5866,7 @@ static void __mem_cgroup_clear_mc(void)
 			res_counter_uncharge(&mc.from->memsw,
 					     PAGE_SIZE * mc.moved_swap);
 
-		for (i = 0; i < mc.moved_swap; i++)
-			css_put(&mc.from->css);
+		css_put_many(&mc.from->css, mc.moved_swap);
 
 		/*
 		 * we charged both to->res and to->memsw, so we should
@@ -6399,6 +6434,9 @@ static void uncharge_batch(struct mem_cgroup *memcg, unsigned long pgpgout,
 	__this_cpu_add(memcg->stat->nr_page_events, nr_anon + nr_file);
 	memcg_check_events(memcg, dummy_page);
 	local_irq_restore(flags);
+
+	if (!mem_cgroup_is_root(memcg))
+		css_put_many(&memcg->css, max(nr_mem, nr_memsw));
 }
 
 static void uncharge_list(struct list_head *page_list)

@@ -2065,9 +2065,14 @@ static void binder_transaction(struct binder_proc *proc,
 	int ret;
 	struct binder_transaction *t;
 	struct binder_work *tcomplete;
+<<<<<<< HEAD
 	binder_size_t *offp, *off_end, *off_start;
 	binder_size_t off_min;
 	u8 *sg_bufp, *sg_buf_end;
+=======
+	binder_size_t *offp, *off_end;
+	binder_size_t off_min;
+>>>>>>> bf1bc4db7634... android: binder: More offset validation
 	struct binder_proc *target_proc;
 	struct binder_thread *target_thread = NULL;
 	struct binder_node *target_node = NULL;
@@ -2310,6 +2315,7 @@ static void binder_transaction(struct binder_proc *proc,
 		return_error_line = __LINE__;
 		goto err_bad_offset;
 	}
+<<<<<<< HEAD
 	if (!IS_ALIGNED(extra_buffers_size, sizeof(u64))) {
 		binder_user_error("%d:%d got transaction with unaligned buffers size, %lld\n",
 				  proc->pid, thread->pid,
@@ -2331,14 +2337,36 @@ static void binder_transaction(struct binder_proc *proc,
 					  proc->pid, thread->pid, (u64)*offp,
 					  (u64)off_min,
 					  (u64)t->buffer->data_size);
+=======
+	off_end = (void *)offp + tr->offsets_size;
+	off_min = 0;
+	for (; offp < off_end; offp++) {
+		struct flat_binder_object *fp;
+
+		if (*offp > t->buffer->data_size - sizeof(*fp) ||
+		    *offp < off_min ||
+		    t->buffer->data_size < sizeof(*fp) ||
+		    !IS_ALIGNED(*offp, sizeof(u32))) {
+			binder_user_error("%d:%d got transaction with invalid offset, %lld (min %lld, max %lld)\n",
+					  proc->pid, thread->pid, (u64)*offp,
+					  (u64)off_min,
+					  (u64)(t->buffer->data_size -
+					  sizeof(*fp)));
+>>>>>>> bf1bc4db7634... android: binder: More offset validation
 			return_error = BR_FAILED_REPLY;
 			return_error_line = __LINE__;
 			goto err_bad_offset;
 		}
+<<<<<<< HEAD
 
 		hdr = (struct binder_object_header *)(t->buffer->data + *offp);
 		off_min = *offp + object_size;
 		switch (hdr->type) {
+=======
+		fp = (struct flat_binder_object *)(t->buffer->data + *offp);
+		off_min = *offp + sizeof(struct flat_binder_object);
+		switch (fp->type) {
+>>>>>>> bf1bc4db7634... android: binder: More offset validation
 		case BINDER_TYPE_BINDER:
 		case BINDER_TYPE_WEAK_BINDER: {
 			struct flat_binder_object *fp;

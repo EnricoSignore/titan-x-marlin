@@ -20,7 +20,7 @@
 
 /* Chill version macros */
 #define CHILL_VERSION_MAJOR			(1)
-#define CHILL_VERSION_MINOR			(2)
+#define CHILL_VERSION_MINOR			(4)
 
 /* Chill governor macros */
 #define DEF_FREQUENCY_UP_THRESHOLD		(80)
@@ -456,10 +456,17 @@ static struct cs_ops cs_ops = {
 	.notifier_block = &cs_cpufreq_notifier_block,
 };
 
+<<<<<<< HEAD
 static struct common_dbs_data cs_dbs_cdata = {
 	.governor = 1,
 	.attr_group_gov_sys = &cs_attr_group_gov_sys,
 	.attr_group_gov_pol = &cs_attr_group_gov_pol,
+=======
+static struct common_dbs_data chill_dbs_cdata = {
+	.governor = GOV_CHILL,
+	.attr_group_gov_sys = &chill_attr_group_gov_sys,
+	.attr_group_gov_pol = &chill_attr_group_gov_pol,
+>>>>>>> 2486219a5e3... cpufreq: chill: use GOV_CHILL macro
 	.get_cpu_cdbs = get_cpu_cdbs,
 	.get_cpu_dbs_info_s = get_cpu_dbs_info_s,
 	.gov_dbs_timer = cs_dbs_timer,

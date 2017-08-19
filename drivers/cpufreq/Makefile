@@ -27,6 +27,13 @@ obj-$(CONFIG_GENERIC_CPUFREQ_CPU0)	+= cpufreq-cpu0.o
 
 # CPU wake boost
 obj-$(CONFIG_CPU_WAKE_BOOST)		+= cpu_wake_boost.o
+# CPU Fingerprint Input Boost 
+obj-$(CONFIG_FINGERPRINT_BOOST)		+= fp-boost.o
+# CPU Input Boost
+obj-$(CONFIG_CPU_INPUT_BOOST)		+= cpu_input_boost.o
+# CPU Boost on Thread Migration 
+obj-$(CONFIG_CPU_BOOST)			+= cpu-boost.o
+
 
 obj-$(CONFIG_CPUFREQ_DT)		+= cpufreq-dt.o
 

@@ -116,16 +116,19 @@ config CPU_FREQ_DEFAULT_GOV_NIGHTMARE
 	bool "nightmare"
 	select CPU_FREQ_GOV_NIGHTMARE
 	help
+	 Use the CPUFreq governor 'nightmare' as default.
 
 config CPU_FREQ_DEFAULT_GOV_DARKNESS
 	bool "darkness"
-  	select CPU_FREQ_GOV_DARKNESS
-  	help
+        select CPU_FREQ_GOV_DARKNESS
+        help
+	 Use the CPUFreq governor 'darkness' as default.
 	
 config CPU_FREQ_DEFAULT_GOV_LIONHEART
 	bool "lionheart"
-  	select CPU_FREQ_GOV_LIONHEART
-  	help
+        select CPU_FREQ_GOV_LIONHEART
+        help
+	 Use the CPUFreq governor 'lionheart' as default.
 	  
 config CPU_FREQ_DEFAULT_GOV_ELEMENTALX
 	bool "elementalx"
@@ -233,25 +236,31 @@ config CPU_FREQ_GOV_INTERACTIVE
 	  If in doubt, say N.
 
 config CPU_FREQ_GOV_DARKNESS
-	tristate "'darkness' governor"
+	tristate "darkness"
+	depends on CPU_FREQ
+	default n
 	help
-	  The cpufreq governor darkness. WJH
-	  To compile this driver as a module, choose M here: the
-	  module will be called cpufreq_darkness.
+	 Use the CPUFreq governor 'darkness' as default.
+
+	  If in doubt, say N.
 
 config CPU_FREQ_GOV_LIONHEART
-	tristate "'lionheart' governor"
+	tristate "lionheart"
+	depends on CPU_FREQ
+	default n
 	help
-	  The cpufreq governor lionheart. WJH
-	  To compile this driver as a module, choose M here: the
-	  module will be called cpufreq_lionheart.
+	 Use the CPUFreq governor 'lionheart' as default.
+
+	  If in doubt, say N.
 
 config CPU_FREQ_GOV_NIGHTMARE
-	tristate "'nightmare' governor"
+	tristate "nightmare"
+	depends on CPU_FREQ
+	default n
 	help
-	  The cpufreq governor nightmare. WJH
-	  To compile this driver as a module, choose M here: the
-	  module will be called cpufreq_nightmare.
+	 Use the CPUFreq governor 'nightmare' as default.
+
+	  If in doubt, say N.
 
 config CPU_FREQ_GOV_ELEMENTALX
 	tristate "'elementalx' cpufreq policy governor"

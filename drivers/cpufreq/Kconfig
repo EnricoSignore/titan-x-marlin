@@ -238,7 +238,6 @@ config CPU_FREQ_GOV_INTERACTIVE
 config CPU_FREQ_GOV_DARKNESS
 	tristate "darkness"
 	depends on CPU_FREQ
-	default n
 	help
 	 Use the CPUFreq governor 'darkness' as default.
 
@@ -247,7 +246,6 @@ config CPU_FREQ_GOV_DARKNESS
 config CPU_FREQ_GOV_LIONHEART
 	tristate "lionheart"
 	depends on CPU_FREQ
-	default n
 	help
 	 Use the CPUFreq governor 'lionheart' as default.
 
@@ -256,7 +254,6 @@ config CPU_FREQ_GOV_LIONHEART
 config CPU_FREQ_GOV_NIGHTMARE
 	tristate "nightmare"
 	depends on CPU_FREQ
-	default n
 	help
 	 Use the CPUFreq governor 'nightmare' as default.
 

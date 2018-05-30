@@ -20,7 +20,11 @@
 
 /* Chill version macros */
 #define CHILL_VERSION_MAJOR			(1)
+<<<<<<< HEAD
 #define CHILL_VERSION_MINOR			(4)
+=======
+#define CHILL_VERSION_MINOR			(1)
+>>>>>>> parent of eaee8dcd536... cpufreq: chill: Don't check for target frequency when boosting
 
 /* Chill governor macros */
 #define DEF_FREQUENCY_UP_THRESHOLD		(80)
@@ -85,8 +89,8 @@ static void cs_check_cpu(int cpu, unsigned int load)
 #endif
 
 		/* Boost if count is reached, otherwise increase freq */
-		if (chill_tuners->boost_enabled && boost_counter >= chill_tuners->boost_count)
-			dbs_info->requested_freq = policy->max;
+		if (cs_tuners->boost_enabled && boost_counter >= cs_tuners->boost_count)
+			dbs_info->requested_freq += get_freq_target(cs_tuners, policy->max);
 		else
 			dbs_info->requested_freq += get_freq_target(cs_tuners, policy);
 

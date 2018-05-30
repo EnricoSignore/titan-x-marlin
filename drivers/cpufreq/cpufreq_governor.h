@@ -202,8 +202,7 @@ struct ex_dbs_tuners {
 	unsigned int down_differential;
 	unsigned int active_floor_freq;
 	unsigned int sampling_down_factor;
-    	unsigned int down_threshold_suspended;
-        unsigned int powersave;
+	unsigned int powersave;
 };
 
 /* Common Governor data across policies */
